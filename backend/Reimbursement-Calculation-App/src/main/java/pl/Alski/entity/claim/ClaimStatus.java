@@ -1,4 +1,4 @@
-package pl.Alski.entity.claims;
+package pl.Alski.entity.claim;
 
 public enum ClaimStatus {
     PENDING,
