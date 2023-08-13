@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Data
 @Entity
-@Table(name = "CLAIMS")
+@Table(name = "CLAIM")
 public class ReimbursementClaim {
     @Id
     @Column(name = "ID")

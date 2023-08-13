@@ -1,12 +1,11 @@
 package pl.Alski.DAO;
 
 import pl.Alski.entity.limitsConfiguration.LimitsConfiguration;
-import pl.Alski.entity.user.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-public class LimitsConfigurationDaoJpaImpl implements LimitsConfigurationDAO{
+public class LimitsConfigurationDaoJpaImpl implements LimitsConfigurationDao {
 
     private EntityManager entityManager;
     public LimitsConfigurationDaoJpaImpl(EntityManager entityManager) {
