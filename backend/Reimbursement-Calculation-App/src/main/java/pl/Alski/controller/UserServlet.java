@@ -3,7 +3,7 @@ package pl.Alski.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import pl.Alski.DAO.UserDao;
-import pl.Alski.DAO.UserDaoJPAImpl;
+import pl.Alski.DAO.UserDaoJDBCImpl;
 import pl.Alski.entity.user.User;
 
 import javax.servlet.ServletException;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @WebServlet(name = "UserServlet", urlPatterns = "/user-record")
 public class UserServlet extends HttpServlet {
 
-    private UserDao userService = new UserDaoJPAImpl();
+    private UserDao userService = new UserDaoJDBCImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

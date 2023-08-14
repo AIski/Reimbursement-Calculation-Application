@@ -1,6 +1,7 @@
 package pl.Alski.entity.user;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.Alski.entity.claim.ReimbursementClaim;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "USER")
+@NoArgsConstructor
 public class User {
     @Id
     @Column(name = "ID")
@@ -29,4 +31,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<ReimbursementClaim> claims;
+
+    public User(int id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
