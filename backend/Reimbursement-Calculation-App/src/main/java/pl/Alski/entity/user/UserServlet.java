@@ -1,9 +1,9 @@
-package pl.Alski.controller;
+package pl.Alski.entity.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
-import pl.Alski.DAO.UserDao;
-import pl.Alski.DAO.UserDaoJDBCImpl;
+import pl.Alski.entity.user.UserDao;
+import pl.Alski.entity.user.UserDaoJDBCImpl;
 import pl.Alski.entity.user.User;
 
 import javax.servlet.ServletException;
@@ -14,17 +14,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @NoArgsConstructor
-@WebServlet(name = "UserServlet", urlPatterns = "/user-record")
+@WebServlet(name = "UserServlet")
 public class UserServlet extends HttpServlet {
 
-    private UserDao userService = new UserDaoJDBCImpl();
+    private UserDao userRepository = new UserDaoJDBCImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String UserID = request.getParameter("id");
         if (request != null) {
             int id = Integer.parseInt(UserID);
-            User tempUser = userService.getUserById(id);
+            User tempUser = userRepository.getUserById(id);
             if (tempUser != null) {
                 response.setContentType("application/JSON");
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -39,6 +39,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         User updatedUser = objectMapper.readValue(request.getReader(), User.class);
+        //TODO: this code.
         // Handle creation logic
     }
 

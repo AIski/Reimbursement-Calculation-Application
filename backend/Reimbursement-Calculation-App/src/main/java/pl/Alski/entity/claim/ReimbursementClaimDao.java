@@ -1,4 +1,4 @@
-package pl.Alski.DAO;
+package pl.Alski.entity.claim;
 
 import pl.Alski.entity.claim.ReimbursementClaim;
 
@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface ReimbursementClaimDao {
 
-    public List<ReimbursementClaim> getClaims();
-    public ReimbursementClaim getClaimById(int id);
+    public List<ReimbursementClaim> getClaimsByUserId(int userId);
     public void saveClaim(ReimbursementClaim claim);
-    public void deleteById(int id);
 }
