@@ -21,9 +21,9 @@ public class UserHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         String method = exchange.getRequestMethod();
 
-        if (path.equals("/users") && method.equals("GET")) {
+        if (path.equals("/user") && method.equals("GET")) {
             handleGetUsers(exchange);
-        } else if (path.equals("/users") && method.equals("POST")) {
+        } else if (path.equals("/user") && method.equals("POST")) {
             handlePostUsers(exchange);
         }
     }

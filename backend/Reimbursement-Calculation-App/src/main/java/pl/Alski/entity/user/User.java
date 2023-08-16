@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Entity
 @Table(name = "USER")
 @NoArgsConstructor
 public class User {

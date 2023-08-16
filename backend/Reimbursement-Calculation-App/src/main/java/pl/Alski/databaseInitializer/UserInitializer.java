@@ -32,7 +32,6 @@ public class UserInitializer {
             Statement statement = connection.createStatement();
             logger.info("Creating USER table.");
             statement.execute(createUserTableSQL);
-            logger.info("Pre-populating USER table.");
             statement.executeUpdate(insertUsersQuery);
             logger.info("USER table is ready.");
             logger.info("UserInitializer finished its job.");

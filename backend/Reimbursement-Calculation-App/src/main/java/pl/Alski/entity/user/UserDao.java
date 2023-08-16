@@ -6,4 +6,6 @@ public interface UserDao {
     public List<User> getUsers();
 
     void saveUser(User user);
+
+    User getUserById(int id);
 }

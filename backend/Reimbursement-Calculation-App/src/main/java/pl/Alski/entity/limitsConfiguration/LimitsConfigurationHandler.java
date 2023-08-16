@@ -34,7 +34,7 @@ public class LimitsConfigurationHandler implements HttpHandler {
     }
 
     private void handleGetLimitsConfig(HttpExchange exchange) throws IOException {
-        LimitsConfiguration configuration = configurationRepository.getConfiguration(0);
+        LimitsConfiguration configuration = configurationRepository.getConfiguration();
         String jsonResponse = serializeConfigToJson(configuration);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         if(jsonResponse.length()!=0){

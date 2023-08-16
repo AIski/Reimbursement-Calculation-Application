@@ -3,19 +3,16 @@ package pl.Alski.entity.limitsConfiguration;
 import javax.persistence.*;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 
 @Data
-@Entity
+@NoArgsConstructor
 @Table(name = "LIMITS_CONFIGURATION")
 public final class LimitsConfiguration {
 
-    @Transient
     private static LimitsConfiguration INSTANCE;
-
-    private LimitsConfiguration() {
-    }
 
     public synchronized static LimitsConfiguration getInstance() {
         if (INSTANCE == null) {

@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-@Entity
 @Table(name = "RECEIPT")
 public class Receipt {
     @Id

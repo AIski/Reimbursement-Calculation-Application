@@ -1,9 +1,13 @@
 package pl.Alski.entity.claim;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,8 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ReimbursementClaimHandler implements HttpHandler {
+    private final Logger logger = LoggerFactory.getLogger(ReimbursementClaimHandler.class);
     private final ReimbursementClaimDao claimRepository = new ReimbursementClaimDaoJDBCImpl();
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -28,9 +33,13 @@ public class ReimbursementClaimHandler implements HttpHandler {
     }
 
     private void handlePostClaim(HttpExchange exchange) throws IOException {
+        logger.info("Handling PostClaim");
         String requestBody = new String(exchange.getRequestBody().readAllBytes());
+        logger.info("Deserializing from JSON.");
+        logger.info(requestBody);
         ReimbursementClaim claim = deserializeClaimFromJson(requestBody);
         claimRepository.saveClaim(claim);
+
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(201, -1);
         exchange.getResponseBody().close();
@@ -44,7 +53,6 @@ public class ReimbursementClaimHandler implements HttpHandler {
         List<ReimbursementClaim> userClaims = claimRepository.getClaimsByUserId(userId);
         String jsonResponse = serializeClaimToJson(userClaims);
         exchange.getResponseHeaders().set("Content-Type", "application/JSON");
-
         if (jsonResponse.length() != 0) {
             exchange.sendResponseHeaders(200, jsonResponse.length());
         } else exchange.sendResponseHeaders(404, 0);
@@ -69,11 +77,22 @@ public class ReimbursementClaimHandler implements HttpHandler {
         return queryParams;
     }
 
-    private ReimbursementClaim deserializeClaimFromJson(String requestBody) throws JsonProcessingException {
-        return objectMapper.readValue(requestBody, ReimbursementClaim.class);
+    private ReimbursementClaim deserializeClaimFromJson(String requestBody) {
+        try{
+            return objectMapper.readValue(requestBody, ReimbursementClaim.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private String serializeClaimToJson(List<ReimbursementClaim> claims) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(claims);
+    private String serializeClaimToJson(List<ReimbursementClaim> claims) {
+        try {
+            return objectMapper.writeValueAsString(claims);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

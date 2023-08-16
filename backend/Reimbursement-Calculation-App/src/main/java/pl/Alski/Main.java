@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import pl.Alski.databaseInitializer.DatabaseInitializer;
 import pl.Alski.entity.claim.ReimbursementClaimHandler;
 import pl.Alski.entity.limitsConfiguration.LimitsConfigurationHandler;
+import pl.Alski.entity.user.UserHandler;
 
 import java.net.InetSocketAddress;
 
@@ -16,9 +17,9 @@ private static final int port = 8080;
     public static void main(String[] args) throws Exception {
        logger.info("Starting Reimbursement App...");
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-//        server.createContext("/users", new UserHandler());
         server.createContext("/limits_config", new LimitsConfigurationHandler());
         server.createContext("/claim", new ReimbursementClaimHandler());
+        server.createContext("/user", new UserHandler());
         server.start();
         DatabaseInitializer dbInitializer = new DatabaseInitializer();
         dbInitializer.initialize();
