@@ -12,7 +12,7 @@ public class ClaimInitializer {
 private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
 
     private final String createClaimTableSQL = "CREATE TABLE IF NOT EXISTS `CLAIM` (" +
-            "ID INT PRIMARY KEY AUTO_INCREMENT," +
+            "ID INT AUTO_INCREMENT PRIMARY KEY," +
             " START_DATE DATE NOT NULL," +
             " END_DATE DATE NOT NULL," +
             " STATUS VARCHAR(50) NOT NULL," +
@@ -25,6 +25,11 @@ private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
             " REIMBURSED_AMOUNT DOUBLE NOT NULL," +
             " CLAIM_ID INT NOT NULL," +
             " FOREIGN KEY (CLAIM_ID) REFERENCES `CLAIM`(ID))";
+
+    private final String createReimbursedDaysTableSQL = "CREATE TABLE REIMBURSED_DAYS (" +
+            "ALLOWANCE_ID INT NOT NULL, " +
+            "REIMBURSED_DAY DATE NOT NULL, " +
+            "FOREIGN KEY (ALLOWANCE_ID) REFERENCES DAILY_ALLOWANCE (ID))";
 
     private final String createCarMileageTableSQL = "CREATE TABLE IF NOT EXISTS `CAR_MILEAGE` (" +
             "ID INT PRIMARY KEY AUTO_INCREMENT," +
@@ -41,14 +46,13 @@ private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
             " CLAIM_ID INT NOT NULL," +
             " FOREIGN KEY (CLAIM_ID) REFERENCES `CLAIM`(ID))";
 
-
     private final String insertClaimsQuery = "INSERT INTO `CLAIM` " +
-            "(ID, START_DATE, END_DATE, STATUS, TOTAL_REIMBURSEMENT_AMOUNT, USER_ID) " +
+            "(START_DATE, END_DATE, STATUS, TOTAL_REIMBURSEMENT_AMOUNT, USER_ID) " +
             "VALUES " +
-            "(1, '2023-08-01', '2023-08-05', 'PENDING', 250.0, 1), " +
-            "(2, '2023-08-12', '2023-08-17', 'APPROVED', 150.0, 2), " +
-            "(3, '2023-08-05', '2023-08-09', 'PENDING', 180.0, 3), " +
-            "(4, '2023-08-06', '2023-08-08', 'APPROVED', 320.0, 4)";
+            "('2023-08-01', '2023-08-05', 'PENDING', 250.0, 1), " +
+            "('2023-08-12', '2023-08-17', 'APPROVED', 150.0, 2), " +
+            "('2023-08-05', '2023-08-09', 'PENDING', 180.0, 3), " +
+            "('2023-08-06', '2023-08-08', 'APPROVED', 320.0, 4)";
 
     private final String insertDailyAllowanceQuery = "INSERT INTO `DAILY_ALLOWANCE` " +
             "(REIMBURSED_AMOUNT, CLAIM_ID) " +
@@ -57,6 +61,7 @@ private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
             "(90.0, 2), " +
             "(75.0, 3), " +
             "(45.0, 4)";
+
 
     private final String insertCarMileageQuery = "INSERT INTO CAR_MILEAGE " +
             "(DISTANCE_IN_KM, CAR_PLATES, REIMBURSED_AMOUNT, CLAIM_ID) " +
@@ -84,19 +89,22 @@ private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
 
             logger.info("Creating CLAIM table.");
             statement.execute(createClaimTableSQL);
-            statement.executeUpdate(insertClaimsQuery);
+//            statement.executeUpdate(insertClaimsQuery);
 
             logger.info("Creating DAILY_ALLOWANCE table.");
             statement.execute(createDailyAllowanceTableSQL);
-            statement.executeUpdate(insertDailyAllowanceQuery);
+//            statement.executeUpdate(insertDailyAllowanceQuery);
+
+            logger.info("Creating REIMBURSED_DAYS table.");
+            statement.execute(createReimbursedDaysTableSQL);
 
             logger.info("Creating CAR_MILEAGE table.");
             statement.execute(createCarMileageTableSQL);
-            statement.executeUpdate(insertCarMileageQuery);
+//            statement.executeUpdate(insertCarMileageQuery);
 
             logger.info("Creating RECEIPT table.");
             statement.execute(createReceiptTableSQL);
-            statement.executeUpdate(insertReceiptQuery);
+//            statement.executeUpdate(insertReceiptQuery);
 
             logger.info("Tables are ready.");
             logger.info("ClaimInitializer finished its job.");

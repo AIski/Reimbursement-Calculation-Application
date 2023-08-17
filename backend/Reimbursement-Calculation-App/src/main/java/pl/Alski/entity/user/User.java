@@ -28,7 +28,6 @@ public class User {
     @Column(name = "EMPLOYED_AT")
     private LocalDate employedAt;
 
-    @OneToMany(mappedBy = "user")
     private List<ReimbursementClaim> claims;
 
     public User(int id, String firstName, String lastName) {

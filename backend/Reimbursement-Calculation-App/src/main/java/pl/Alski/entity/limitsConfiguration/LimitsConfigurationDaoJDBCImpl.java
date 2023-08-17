@@ -15,10 +15,13 @@ public class LimitsConfigurationDaoJDBCImpl implements LimitsConfigurationDao {
     private final String updateConfigurationQuery = "UPDATE LIMITS_CONFIGURATION " +
             "SET DAILY_ALLOWANCE_RATE = ?, CAR_MILEAGE_RATE = ?, " +
             "TOTAL_REIMBURSEMENT_LIMIT = ?, MILEAGE_LIMIT_IN_KILOMETERS = ?";
+    private final String insertConfigurationQuery = "INSERT INTO LIMITS_CONFIGURATION " +
+            "(DAILY_ALLOWANCE_RATE, CAR_MILEAGE_RATE, TOTAL_REIMBURSEMENT_LIMIT, MILEAGE_LIMIT_IN_KILOMETERS) " +
+            "VALUES (?, ?, ?, ?)";
 
     private final String deleteReceiptLimitsQuery = "DELETE FROM RECEIPT_LIMITS";
     private final String insertReceiptLimitQuery = "INSERT INTO RECEIPT_LIMITS (LIMITS_CONFIGURATION_ID, RECEIPT_TYPE, PER_RECEIPT_LIMIT) " +
-            "VALUES (?, ?, ?)";
+            "VALUES (1, ?, ?)";
     private final String getLimitsConfigurationQuery = "SELECT * FROM LIMITS_CONFIGURATION";
     private final String getReceiptLimitsQuery = "SELECT * FROM RECEIPT_LIMITS WHERE LIMITS_CONFIGURATION_ID = ?";
 
@@ -33,7 +36,6 @@ public class LimitsConfigurationDaoJDBCImpl implements LimitsConfigurationDao {
                 limitsConfiguration = getLimitsConfigurationFromResultSet(resultSet);
                 loadReceiptLimits(limitsConfiguration, connection);
             }
-            logger.info("Successfully fetched LimitsConfiguration from db");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,7 +44,7 @@ public class LimitsConfigurationDaoJDBCImpl implements LimitsConfigurationDao {
 
 
     @Override
-    public void saveConfiguration(LimitsConfiguration configuration) {
+    public void updateConfiguration(LimitsConfiguration configuration) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             connection.setAutoCommit(false);
 
@@ -71,14 +73,50 @@ public class LimitsConfigurationDaoJDBCImpl implements LimitsConfigurationDao {
         }
     }
 
+    public void insertConfiguration(LimitsConfiguration configuration) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            int generatedId = 0;
+            try (PreparedStatement statement = connection.prepareStatement(insertConfigurationQuery, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setDouble(1, configuration.getDailyAllowanceRate());
+                statement.setDouble(2, configuration.getCarMileageRate());
+                statement.setInt(3, configuration.getTotalReimbursementLimit());
+                statement.setInt(4, configuration.getMileageLimitInKilometers());
+                statement.executeUpdate();
 
-    private void updateConfiguration(LimitsConfiguration configuration, Connection connection) throws SQLException {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                        configuration.setId(generatedId);
+                        insertNewReceiptLimits(configuration, connection, configuration.getReceiptLimits());
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private void updateConfiguration(LimitsConfiguration configuration, Connection connection) {
+        logger.info("Inside update Configuration");
         try (PreparedStatement statement = connection.prepareStatement(updateConfigurationQuery)) {
             statement.setDouble(1, configuration.getDailyAllowanceRate());
             statement.setDouble(2, configuration.getCarMileageRate());
             statement.setInt(3, configuration.getTotalReimbursementLimit());
             statement.setInt(4, configuration.getMileageLimitInKilometers());
             statement.executeUpdate();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    configuration.setId(generatedId);
+                    logger.info("configuration Id:" + generatedId);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -88,23 +126,24 @@ public class LimitsConfigurationDaoJDBCImpl implements LimitsConfigurationDao {
         }
     }
 
-    private void insertNewReceiptLimits(LimitsConfiguration configuration, Connection connection, Map<String, Double> receiptLimits) throws SQLException {
-        try (PreparedStatement receiptStmt = connection.prepareStatement(insertReceiptLimitQuery)) {
+    private void insertNewReceiptLimits(LimitsConfiguration configuration, Connection connection, Map<String, Double> receiptLimits) {
+        logger.info("Inside insertNewReceiptLimits");
+        try (PreparedStatement statement = connection.prepareStatement(insertReceiptLimitQuery)) {
             int configurationId = configuration.getId();
             for (Map.Entry<String, Double> entry : receiptLimits.entrySet()) {
-                receiptStmt.setInt(1, configurationId);
-                receiptStmt.setString(2, entry.getKey());
-                receiptStmt.setDouble(3, entry.getValue());
-                receiptStmt.executeUpdate();
+                statement.setString(1, entry.getKey());
+                statement.setDouble(2, entry.getValue());
+                statement.executeUpdate();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     private LimitsConfiguration getLimitsConfigurationFromResultSet(ResultSet resultSet) throws SQLException {
         LimitsConfiguration limitsConfiguration = LimitsConfiguration.getInstance();
-        logger.info("Getting ID");
         limitsConfiguration.setId(resultSet.getInt("id"));
-        logger.info("Getting DailyAllowanceRate");
         limitsConfiguration.setDailyAllowanceRate(resultSet.getDouble("DAILY_ALLOWANCE_RATE"));
         limitsConfiguration.setCarMileageRate(resultSet.getDouble("CAR_MILEAGE_RATE"));
         limitsConfiguration.setTotalReimbursementLimit(resultSet.getInt("TOTAL_REIMBURSEMENT_LIMIT"));

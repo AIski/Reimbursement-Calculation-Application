@@ -6,6 +6,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.Alski.entity.user.DTO.UserDTO;
+import pl.Alski.entity.user.DTO.UserMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,7 +32,8 @@ public class UserHandler implements HttpHandler {
 
     private void handleGetUsers(HttpExchange exchange) throws IOException {
         List<User> users = userRepository.getUsers();
-        String jsonResponse = serializeUsersToJson(users);
+        List<UserDTO> userDTOs = UserMapper.INSTANCE.usersToDTOs(users);
+        String jsonResponse = serializeUsersToJson(userDTOs);
         exchange.getResponseHeaders().set("Content-Type", "application/JSON");
         if (jsonResponse.length() != 0) {
             exchange.sendResponseHeaders(200, jsonResponse.length());
@@ -53,7 +56,7 @@ public class UserHandler implements HttpHandler {
         return objectMapper.readValue(requestBody, User.class);
     }
 
-    private String serializeUsersToJson(List<User> users) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(users);
+    private String serializeUsersToJson(List<UserDTO> usersDTOs) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(usersDTOs);
     }
 }

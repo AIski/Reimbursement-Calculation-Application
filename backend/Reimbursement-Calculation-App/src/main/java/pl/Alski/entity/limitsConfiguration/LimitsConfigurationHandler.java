@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import pl.Alski.entity.limitsConfiguration.DTO.LimitsConfigurationDTO;
+import pl.Alski.entity.limitsConfiguration.DTO.LimitsConfigurationMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,7 +29,7 @@ public class LimitsConfigurationHandler implements HttpHandler {
     private void handlePostLimitsConfig(HttpExchange exchange) throws IOException {
         String requestBody = new String(exchange.getRequestBody().readAllBytes());
         LimitsConfiguration limitsConfiguration = deserializeConfigurationFromJson(requestBody);
-        configurationRepository.saveConfiguration(limitsConfiguration);
+        configurationRepository.updateConfiguration(limitsConfiguration);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(201, -1);
         exchange.getResponseBody().close();
@@ -35,7 +37,8 @@ public class LimitsConfigurationHandler implements HttpHandler {
 
     private void handleGetLimitsConfig(HttpExchange exchange) throws IOException {
         LimitsConfiguration configuration = configurationRepository.getConfiguration();
-        String jsonResponse = serializeConfigToJson(configuration);
+        LimitsConfigurationDTO configurationDTO = LimitsConfigurationMapper.INSTANCE.configurationToDto(configuration);
+        String jsonResponse = serializeConfigToJson(configurationDTO);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         if(jsonResponse.length()!=0){
             exchange.sendResponseHeaders(200, jsonResponse.length());
@@ -50,7 +53,7 @@ public class LimitsConfigurationHandler implements HttpHandler {
         return objectMapper.readValue(requestBody, LimitsConfiguration.class);
     }
 
-    private String serializeConfigToJson(LimitsConfiguration config) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(config);
+    private String serializeConfigToJson(LimitsConfigurationDTO configDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(configDto);
     }
 }
