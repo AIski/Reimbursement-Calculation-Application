@@ -1,0 +1,57 @@
+<div class="user-container d-flex flex-column align-items-center justify-content-center">
+    <div class="text-center">
+        <h1 class="pb-3">User Directory</h1>
+        <div *ngIf="!isReady" class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div *ngIf="isReady" class="user-form custom-border p-2">
+            <h3>Insert new Claim</h3>
+            <form [formGroup]="claimForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" class="form-control" formControlName="startDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" class="form-control" formControlName="endDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="receipts">Receipts:</label>
+                    <select id="receipts" class="form-control" formControlName="receipts">
+                        <option value="">Select Receipt Type</option>
+                        <ng-container *ngIf="limitsConfiguration">
+                            <option *ngFor="let receiptType of availableReceiptTypes" [value]="receiptType">
+                                {{ receiptType }} (Limit: {{ limitsConfiguration.receiptLimits[receiptType] || 'N/A' }})
+                            </option>
+                        </ng-container>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reimbursedDays">Reimbursed Days With Allowance:</label>
+                    <!-- Implement inputs for reimbursed days -->
+                </div>
+
+                <div class="form-group">
+                    <label for="distance">Distance in KM for Car Mileage:</label>
+                    <input type="number" id="distance" class="form-control" formControlName="distanceInKMForCarMileage">
+                </div>
+
+                <div class="form-group">
+                    <label for="carPlates">Car Plates:</label>
+                    <input type="text" id="carPlates" class="form-control" formControlName="carPlates">
+                </div>
+
+                <div class="form-group">
+                    <label for="totalAmount">Total Reimbursement Amount:</label>
+                    <input type="number" id="totalAmount" class="form-control"
+                        formControlName="totalReimbursementAmount">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Reimbursement Claim</button>
+            </form>
+        </div>
+    </div>
+</div>

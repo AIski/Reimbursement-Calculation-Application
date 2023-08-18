@@ -12,7 +12,12 @@ public interface ClaimMapper {
     ClaimMapper INSTANCE = Mappers.getMapper(ClaimMapper.class);
 
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(target = "dailyAllowance", source = "dailyAllowance")
+    @Mapping(target = "carMileage", source = "carMileage")
     ClaimDTO claimToDto(ReimbursementClaim claim);
+    @Mapping(target = "user.id", source = "userId")
+    @Mapping(target = "dailyAllowance", source = "dailyAllowance")
+    @Mapping(target = "carMileage", source = "carMileage")
     ReimbursementClaim dtoToClaim(ClaimDTO dto);
     List<ClaimDTO> claimsToDTOs(List<ReimbursementClaim> claims);
     List<ReimbursementClaim> DTOsToClaims(List<ClaimDTO> claimDTOS);

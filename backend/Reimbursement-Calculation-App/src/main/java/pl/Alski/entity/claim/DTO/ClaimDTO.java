@@ -15,8 +15,8 @@ public class ClaimDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private ArrayList<ReceiptDTO> receipts;
-    private DailyAllowance dailyAllowance;
-    private CarMileage carMileage;
+    private DailyAllowanceDTO dailyAllowance;
+    private CarMileageDTO carMileage;
     private double totalReimbursementAmount;
     private int UserId;
 }

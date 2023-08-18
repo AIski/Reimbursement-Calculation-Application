@@ -20,6 +20,10 @@ public class UserHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "http://localhost:4200"); // Replace with your frontend URL
+        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
         String path = exchange.getRequestURI().getPath();
         String method = exchange.getRequestMethod();
 

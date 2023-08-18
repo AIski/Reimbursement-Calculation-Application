@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 public class LimitsInitializer {
-    public static final LimitsConfiguration limitsConfiguration = new LimitsConfiguration();
+    public static final LimitsConfiguration limitsConfiguration = LimitsConfiguration.getInstance();
     private final Logger logger = LoggerFactory.getLogger(LimitsInitializer.class);
     private final String createLimitsConfigurationTableSQL = " CREATE TABLE IF NOT EXISTS LIMITS_CONFIGURATION (" +
             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -28,15 +28,6 @@ public class LimitsInitializer {
             "PER_RECEIPT_LIMIT DOUBLE NOT NULL, " +
             "PRIMARY KEY (LIMITS_CONFIGURATION_ID, RECEIPT_TYPE), " +
             "FOREIGN KEY (LIMITS_CONFIGURATION_ID) REFERENCES LIMITS_CONFIGURATION(ID))";
-    private final String insertLimitsConfigurationQuery = "INSERT INTO LIMITS_CONFIGURATION (" +
-            "ID, DAILY_ALLOWANCE_RATE, CAR_MILEAGE_RATE, TOTAL_REIMBURSEMENT_LIMIT, MILEAGE_LIMIT_IN_KILOMETERS) " +
-            "VALUES (0, 15, 0.3, 1000, 50000)";
-    private final String insertReceiptLimitsToConfigurationQuery = "INSERT INTO RECEIPT_LIMITS (" +
-            "LIMITS_CONFIGURATION_ID, RECEIPT_TYPE, PER_RECEIPT_LIMIT) " +
-            "VALUES (0, 'Taxi', 50.0)," +
-            " (0, 'Hotel', 100.0)," +
-            " (0, 'Plane Ticket', 200.0)," +
-            " (0, 'Train', 100.0)";
 
     public void initialize() {
         logger.info("--------------------------");

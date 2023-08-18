@@ -89,22 +89,18 @@ private final Logger logger = LoggerFactory.getLogger(ClaimInitializer.class);
 
             logger.info("Creating CLAIM table.");
             statement.execute(createClaimTableSQL);
-//            statement.executeUpdate(insertClaimsQuery);
 
             logger.info("Creating DAILY_ALLOWANCE table.");
             statement.execute(createDailyAllowanceTableSQL);
-//            statement.executeUpdate(insertDailyAllowanceQuery);
 
             logger.info("Creating REIMBURSED_DAYS table.");
             statement.execute(createReimbursedDaysTableSQL);
 
             logger.info("Creating CAR_MILEAGE table.");
             statement.execute(createCarMileageTableSQL);
-//            statement.executeUpdate(insertCarMileageQuery);
 
             logger.info("Creating RECEIPT table.");
             statement.execute(createReceiptTableSQL);
-//            statement.executeUpdate(insertReceiptQuery);
 
             logger.info("Tables are ready.");
             logger.info("ClaimInitializer finished its job.");

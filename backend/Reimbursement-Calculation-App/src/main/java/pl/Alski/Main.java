@@ -25,6 +25,8 @@ private static final int port = 8080;
         dbInitializer.initialize();
         logger.info("Reimbursement App is up and running on port " + port + ".");
         logger.info("Press Enter to stop the server...");
+        logger.info("------------------------");
+        logger.info("");
         System.in.read();
         server.stop(0);
     }

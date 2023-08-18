@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 
 @Data
-@NoArgsConstructor
 @Table(name = "LIMITS_CONFIGURATION")
 public final class LimitsConfiguration {
 

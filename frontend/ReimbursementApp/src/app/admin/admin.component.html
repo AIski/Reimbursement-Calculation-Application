@@ -1,0 +1,35 @@
+<div class="container">
+    <h2>Modify Limits Configuration</h2>
+    <form [formGroup]="limitsForm" (ngSubmit)="onSubmit()">
+        <div>
+            <label>Daily Allowance Rate:</label>
+            <input type="number" formControlName="dailAllowanceRate">
+        </div>
+        <div>
+            <label>Car Mileage Rate:</label>
+            <input type="number" formControlName="carMileageRate">
+        </div>
+        <div>
+            <label>Total Reimbursement Limit:</label>
+            <input type="number" formControlName="totalReimbursementLimit">
+        </div>
+        <div>
+            <label>Mileage Limit in Kilometers:</label>
+            <input type="number" formControlName="mileageLimitInKilometers">
+        </div>
+
+        <div formArrayName="receiptLimits">
+            <div *ngFor="let receiptType of receiptControls; let i = index" [formGroupName]="i">
+                <label>Receipt Type:</label>
+                <input formControlName="type">
+                <label>Receipt Limit:</label>
+                <input type="number" formControlName="limit">
+                <button type="button" (click)="removeReceiptType(i)">Remove</button>
+            </div>
+        </div>
+
+        <button type="button" (click)="addReceiptType()">Add Receipt Type</button>
+
+        <button type="submit">Save Configuration</button>
+    </form>
+</div>
